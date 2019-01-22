@@ -26,7 +26,12 @@ export default class App extends React.Component {
     this.login = this.login.bind(this);
   }
   login() {
-    alert(this.state.username)
+    firebase.auth().signInWithEmailAndPassword(this.state.username, this.state.password).then((res) => {
+      firebase.database().ref('users/' + res.user.uid).set({
+        username: this.state.username,
+      })
+    })
+    alert("You are now login");
   }
   register() {
     // alert(this.state.username)
@@ -35,6 +40,7 @@ export default class App extends React.Component {
         username: this.state.username,
       })
     })
+    alert("thank you for sign in");
 
   }
   render() {
