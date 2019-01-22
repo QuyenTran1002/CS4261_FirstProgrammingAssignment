@@ -16,31 +16,76 @@ const config = {
 firebase.initializeApp(config);
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      password: '',
+    }
+    this.register = this.register.bind(this);
+    this.login = this.login.bind(this);
+  }
+  login() {
+  }
+  register() {
+    // alert(this.state.username)
+    firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(this.state.username, this.state.password).then((res) => {
+      firebase.database().ref('users/' + res.user.uid).set({
+        username: this.state.username,
+      })
+    })
+
+  }
   render() {
     return (
       <SafeAreaView>
-        <View>
+        <View style={styles.loginView}>
           <Text style={styles.loginHeader}>Login</Text>
-          <Text style={styles.usernamePrompt}>Username</Text>
-          <TextInput style={styles.input}></TextInput>
+          <Text style={styles.usernamePrompt}>Email</Text>
+          <TextInput style={styles.input} value={this.state.username} onChangeText={(text)=>this.setState({username: text})}></TextInput>
           <Text style={styles.usernamePrompt}>Password</Text>
-          <TextInput style={styles.input}></TextInput>
-          <Button title = 'Login' onPress={this.addItem}></Button>
-          <Button title = 'Sign Up' onPress={this.addItem}></Button>
+          <TextInput secureTextEntry={true} style={styles.input} value={this.state.password} onChangeText={(text)=>this.setState({password: text})}></TextInput>
+          <Button style={styles.blueBtn} title='Login' backgroundColor='red' onPress={this.login}></Button>
+          <Button style={styles.greenBtn} title='Sign Up' backgroundColor='#0096FF' onPress={this.register}></Button>
         </View>
       </SafeAreaView>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  loginHeader: {
 
+const styles = StyleSheet.create({
+  blueBtn: {
+    borderColor: 'blue',
+    borderRadius: 5,
+    height: 35,
+    marginBottom: 20,
+    backgroundColor: '#E9E9E9',
+  },
+  greenBtn: {
+    borderColor: 'blue',
+    borderRadius: 5,
+    height: 35,
+    marginBottom: 20,
+    backgroundColor: '#E9E9E9',
+  },
+  loginView: {
+    padding: 25,
+  },
+  loginHeader: {
+    fontSize: 50,
+    fontWeight: 'bold',
+    paddingBottom: 15,
   },
   usernamePrompt: {
-
+    fontSize: 18,
+    paddingBottom: 5,
   },
   input: {
-
+    borderColor: 'blue',
+    borderRadius: 5,
+    height: 35,
+    marginBottom: 20,
+    backgroundColor: '#E9E9E9',
   }
 });
