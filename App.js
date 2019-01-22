@@ -26,6 +26,7 @@ export default class App extends React.Component {
     this.login = this.login.bind(this);
   }
   login() {
+    alert(this.state.username)
   }
   register() {
     // alert(this.state.username)
