@@ -1,2 +1,2 @@
 # CS4261_FirstProgrammingAssignment
-InforCollector
+InfoCollector
