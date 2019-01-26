@@ -76,7 +76,8 @@ class SignupScreen extends React.Component {
             placeholder='Tell something about yourself'></TextInput>
           
           <Button style={styles.greenBtn} 
-            title='Sign Up' backgroundColor='#0096FF' 
+            title='Sign Up' 
+            backgroundColor='#0096FF' 
             onPress={this.register}></Button>
 
           <Button
@@ -102,19 +103,33 @@ class LoginScreen extends React.Component {
     this.state = {
       username: '',
       password: '',
-      info: '',
-      major: '',
     }
     this.login = this.login.bind(this);
   }
 
   login() {
-    firebase.auth().signInWithEmailAndPassword(this.state.username, this.state.password).then((res) => {
-      firebase.database().ref('users/' + res.user.uid).set({
-        username: this.state.username,
+    // firebase.auth().signInWithEmailAndPassword(this.state.username, this.state.password).then((res) => {
+    //   // firebase.database().ref('users/' + res.user.uid).set({
+    //   //   username: this.state.username,
+    //   // })
+    // })
+    // // alert("You are now login");
+    
+    try {
+      firebase.auth().signInWithEmailAndPassword(this.state.username, this.state.password).then((user) => {
+        console.log(user)
+        if (user) {
+          this.props.navigation.dispatch(StackActions.reset({
+            index: 0,
+            actions: [
+              NavigationActions.navigate({ routeName: 'Profile' })
+            ],
+          }))
+        }
       })
-    })
-    // alert("You are now login");
+    } catch (error) {
+      alert('Login Failed')
+    }
   }
   
   render() {
@@ -159,12 +174,47 @@ class LoginScreen extends React.Component {
   }  
 }
 
+class ProfileScreen extends React.Component {
+  render() {
+    return (
+      <SafeAreaView>
+        <View style={styles.loginView}>
+          <Text style={styles.loginHeader}>InfoCollector</Text>
+
+          <Text style={styles.usernamePrompt}>PROFILE PAGE</Text>
+
+          <WeatherWidget
+            api={"9198bd7fa0fe721d6f54ce9861e973d6"}
+            lat={"33.753746"}
+            lng={"-84.386330"}
+          />
+
+          <Button
+            title="Log Out"
+            onPress={() => {
+              this.props.navigation.dispatch(StackActions.reset({
+                index: 0,
+                actions: [
+                  NavigationActions.navigate({ routeName: 'SignUp' })
+                ],
+              }))
+            }}
+          />
+        </View>
+      </SafeAreaView>
+    );
+  }  
+}
+
 const AppNavigator = createStackNavigator({
   SignUp: {
     screen: SignupScreen,
   },
   LogIn: {
     screen: LoginScreen,
+  },
+  Profile: {
+    screen: ProfileScreen,
   },
 }, {
     initialRouteName: 'SignUp',
