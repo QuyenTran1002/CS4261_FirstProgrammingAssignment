@@ -22,8 +22,18 @@ firebase.initializeApp(config);
 
 //--------------------------------------------------//
 
+
+// global.user = firebase.user;
+
+//--------------------------------------------------//
+
 class SignupScreen extends React.Component {
   constructor(props) {
+    // global.userNAME;
+    // global.userPASS;
+    // global.userINFO;
+    // global.userMAJOR;
+
     super(props);
     this.state = {
       username: '',
@@ -34,9 +44,21 @@ class SignupScreen extends React.Component {
     this.register = this.register.bind(this);
   }
 
+  // static getNAME() {
+  //   return this.userNAME;
+  // }
+
   register() {
+    userNAME = this.state.username;
+    userPASS = this.state.password;
+    // temp = this.state.username;
+    // console.log(temp);
+
     firebase.auth().createUserWithEmailAndPassword(this.state.username, 
       this.state.password).then((res) => {
+        userINFO = this.state.info;
+        userMAJOR = this.state.major;
+        // console.log(this.state.info);
         firebase.database().ref('users/' + res.user.uid ).set({
         major: this.state.major,
         info: this.state.info,
@@ -102,7 +124,7 @@ class SignupScreen extends React.Component {
             lat={"33.753746"}
             lng={"-84.386330"}
           />
-          
+
         </View>
       </SafeAreaView>
     );
@@ -113,6 +135,8 @@ class SignupScreen extends React.Component {
 
 class LoginScreen extends React.Component {
   constructor(props) {
+    global.userNAME;
+    global.userPASS;
     super(props);
     this.state = {
       username: '',
@@ -121,8 +145,14 @@ class LoginScreen extends React.Component {
     this.login = this.login.bind(this);
   }
 
+  static getNAME() {
+    return this.userNAME;
+  }
+
   login() {
     try {
+      userNAME = this.state.username;
+      userPASS = this.state.password;
       firebase.auth().signInWithEmailAndPassword(this.state.username, 
         this.state.password).then((user) => {
           // console.log(user)
@@ -185,7 +215,39 @@ class LoginScreen extends React.Component {
 //--------------------------------------------------//
 
 class ProfileScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    global.temp;
+  }
+  temp() {
+    // firebase.database().ref.once('value').then(function(dataSnapshot) {
+    //   console.log('hello' + dataSnapshot.val().info);
+    // });
+    // console.log(temp);
+    console.log('hi ' + global.userNAME);
+
+    // var temp = firebase.database().ref('users').orderByChild('username')
+    //   .equalTo(global.userNAME).once('value', snap => console.log(snap.val()));
+
+    var temp = firebase.database().ref('users').orderByChild('username')
+      .equalTo(global.userNAME).on('child_added', snap => console.log(snap.val()));
+    // console.log('temp = ' + temp);
+
+    // firebase.database().ref('users').orderByChild('username')
+    //     .equalTo(global.userNAME).on('value', (snapshot) => {
+    //       return {
+    //         info: snapshot.val().info
+    //       }
+    //     });
+    // console.log(global.temp);
+
+    // temp = temp.toString();
+    // console.log('hello ' + temp);
+  }
   render() {
+    name = LoginScreen.getNAME();
+    // console.log(name);
+    // this.temp();
     return (
       <SafeAreaView>
         <View style={styles.loginView}>
@@ -193,6 +255,14 @@ class ProfileScreen extends React.Component {
 
           <Text style={styles.usernamePrompt}>PROFILE PAGE</Text>
 
+          {/* console.log(global.user.username); */}
+          {/* <Text style={styles.usernamePrompt}>{SignupScreen.userNAME}</Text> */}
+          {/* <Text style={styles.usernamePrompt}>{global.temp}</Text> */}
+          <Text style={styles.usernamePrompt}>{global.userNAME}</Text>
+          <Text style={styles.usernamePrompt}>{global.userPASS}</Text>
+          <Text style={styles.usernamePrompt}>{global.userMAJOR}</Text>
+          <Text style={styles.usernamePrompt}>{global.userINFO}</Text>
+          {/* <Text style={styles.usernamePrompt}>{global.temp}</Text> */}
 
 
           <Button
